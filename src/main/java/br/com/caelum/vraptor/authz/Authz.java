@@ -1,9 +1,8 @@
 package br.com.caelum.vraptor.authz;
 
-import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import br.com.caelum.vraptor.InterceptionException;
 import br.com.caelum.vraptor.Intercepts;
 import br.com.caelum.vraptor.Result;
@@ -60,10 +59,14 @@ public class Authz implements Interceptor {
 
 	@Override
 	public boolean accepts(ResourceMethod method) {
-		if (method.getMethod().isAnnotationPresent(AuthzBypass.class) || method.getResource().getType().isAnnotationPresent(AuthzBypass.class)) {
+		if (method.getMethod().isAnnotationPresent(AuthzBypass.class) || isAnnotationPresent(method.getResource().getType())) {
 			return false;
 		}
 		return true;
+	}
+
+	private boolean isAnnotationPresent(Class<?> type) {
+		return type.isAnnotationPresent(AuthzBypass.class) || (!type.equals(Object.class) && isAnnotationPresent(type.getSuperclass()));
 	}
 
 }

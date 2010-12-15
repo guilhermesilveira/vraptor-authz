@@ -114,4 +114,16 @@ public class AuthzTest {
 		}
 	}
 
+	@Test
+	public void shouldBypassAuthzIfAnnotationIsInTypeHierarchy() throws SecurityException, NoSuchMethodException {
+		Mockito.when(bypassedResourceMethod.getMethod()).thenReturn(MyPhoto.class.getMethod("newWork"));
+		Mockito.when(bypassedResourceMethod.getResource()).thenReturn(new DefaultResourceClass(MyPhoto.class));
+		Assert.assertFalse(interceptor.accepts(bypassedResourceMethod));
+	}
+
+	static class MyPhoto extends CreativeCommonsResource{
+		public void newWork() {
+		}
+	}
+
 }
